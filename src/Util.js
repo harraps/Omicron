@@ -4,6 +4,16 @@ Math.QPI = Math.PI*0.25;
 
 OMICRON.Util = {
 	/**
+	Clone the vector
+	*/
+	cloneVector: function(vector, padding){
+		return new THREE.Vector3(
+			vector.x + padding,
+			vector.y + padding,
+			vector.z + padding
+		);
+	},
+	/**
 	Remove element from given list
 	*/
 	listRemove: function(list, element){
