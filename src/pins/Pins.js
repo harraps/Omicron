@@ -4,6 +4,7 @@ mats[null] = new THREE.MeshBasicMaterial({});
 mats["boolean"] = new THREE.MeshLambertMaterial({color: 0xff0000, emissive: 0x000000});
 mats["number" ] = new THREE.MeshLambertMaterial({color: 0x0000ff, emissive: 0x000000});
 mats["string" ] = new THREE.MeshLambertMaterial({color: 0x00ff00, emissive: 0x000000});
+mats["array"  ] = new THREE.MeshLambertMaterial({color: 0xffffff, emissive: 0x000000});
 
 /**
 Octahedron shaped input pin
@@ -42,8 +43,15 @@ class InPin {
 		if(material == null) material = OMICRON.pinMaterials[null];
 		this.mesh = new THREE.Mesh(geometry, material);
 		this.mesh.name = params.name || ""; // name of the pin
+		//add the pin mesh to the block object3D
+		this.block.object.add(this.mesh);
 		if(pos != null) this.mesh.position.copy(pos);
 		if(rot != null) this.mesh.rotation.copy(rot);
+
+		var min = new THREE.Vector3(-0.05,-0.05,-0.05),
+				max = new THREE.Vector3( 0.05, 0.05, 0.05);
+		this.box = new THREE.Box3(min, max);
+		this.box.translate(this.mesh.getWorldPosition());
 
 		// color of the wire
 		this.highColor = params.highColor || 0xFFFFFF;
@@ -104,12 +112,6 @@ class InPin {
 		}
 	}
 
-	get Box(){
-		var min = Util.cloneVector(this.mesh.position, -0.05),
-				max = Util.cloneVector(this.mesh.position, +0.05);
-		return new THREE.Box3(min, max);
-	}
-
 	setWireColor(isHigh){
 		var mat = this.wire.material;
 		if(isHigh){
@@ -164,8 +166,15 @@ class OutPin {
 		if(material == null) material = OMICRON.pinMaterials[null];
 		this.mesh = new THREE.Mesh(geometry, material);
 		this.mesh.name = params.name || "";
+		//add the pin mesh to the block object3D
+		this.block.object.add(this.mesh);
 		if(pos != null) this.mesh.position.copy(pos);
 		if(rot != null) this.mesh.rotation.copy(rot);
+
+		var min = new THREE.Vector3(-0.05,-0.05,-0.05),
+				max = new THREE.Vector3( 0.05, 0.05, 0.05);
+		this.box = new THREE.Box3(min, max);
+		this.box.translate(this.mesh.getWorldPosition());
 
 		// multiple input pins connected
 		this.inpins = [];
@@ -194,12 +203,6 @@ class OutPin {
 		for(var i=0; i<this.inpins.length; ++i){
 			this.inpins[i].disconnect();
 		}
-	}
-
-	get Box(){
-		var min = Util.cloneVector(this.mesh.position, -0.05),
-				max = Util.cloneVector(this.mesh.position, +0.05);
-		return new THREE.Box3(min, max);
 	}
 
 	destroy(){
