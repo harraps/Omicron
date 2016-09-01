@@ -1,11 +1,3 @@
-// default style for labels
-var _style = {
-	fontFace: "monospace",
-	fontColor:       "#ffffff",
-	backgroundColor: "#b40000",
-	borderColor:     "#ffffff",
-};
-
 // default 1 input, 1 output
 var _default_1 = {
 	meshes:  [_mesh],
@@ -31,17 +23,12 @@ var _default_2 = {
 Logic Gate Block with one input and one output
 @class LogicGate1
 */
-class LogicGate1 extends Block {
-	/**
-	@constructor
-	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, LogicGate1.options);
+class LogicGate1 extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
 
 		// default state of the block
-		this.mod = false;
-		this.fun = LogicGate1._f[false];
-		this.labels[0].material = LogicGate1._l[false];
+		this.setState(false);
 	}
 
 	getValue(){
@@ -50,36 +37,30 @@ class LogicGate1 extends Block {
 
 	interact(){
 		// switch block state
-		this.mod = !this.mod;
-		this.fun = LogicGate1._f[this.mod];
-		// update the label
-		this.labels[0].material = LogicGate1._l[this.mod];
+		this.setState(!this.mod);
 	}
 }
 OMICRON.LogicGate1 = LogicGate1;
 LogicGate1.options = _default_1;
+LogicGate1.className = "LogicGate1";
+LogicGate1.BlockName = "Logic Gate";
 var _f = LogicGate1._f = []; // functions list
 var _l = LogicGate1._l = []; //    labels list
 _f[false] = function(value){ return !!value; };
 _f[true ] = function(value){ return  !value; };
-_l[false] = OMICRON.createLabel("BUF", _style);
-_l[true ] = OMICRON.createLabel("NOT", _style);
+_l[false] = OMICRON.createLabel("BUF", _style_boolean);
+_l[true ] = OMICRON.createLabel("NOT", _style_boolean);
 
 /**
 Logic Gate Block with two inputs and one output
 @class LogicGate2
 */
-class LogicGate2 extends Block {
-	/**
-	@constructor
-	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, LogicGate2.options);
+class LogicGate2 extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
 
 		//default state of the block
-		this.mod = 0;
-		this.fun = LogicGate2._f[0];
-		this.labels[0].material = LogicGate2._l[0];
+		this.setState(0);
 	}
 
 	getValue(){
@@ -87,15 +68,15 @@ class LogicGate2 extends Block {
 	}
 
 	interact(){
-		++this.mod;
-		if(this.mod > 5) this.mod = 0;
-		this.fun = LogicGate2._f[this.mod];
-		// update the label
-		this.labels[0].material = LogicGate2._l[this.mod];
+		var state = this.mod+1;
+		if(state > 5) state = 0;
+		this.setState(state);
 	}
 }
 OMICRON.LogicGate2 = LogicGate2;
 LogicGate2.options = _default_2;
+LogicGate2.className = "LogicGate2";
+LogicGate2.BlockName = "Logic Gate";
 var _f = LogicGate1._f = []; // functions list
 var _l = LogicGate1._l = []; //    labels list
 _f[0] = function(a, b){ return   a && b;    };
@@ -104,26 +85,12 @@ _f[2] = function(a, b){ return   a ?  !b:b; };
 _f[3] = function(a, b){ return !(a && b);   };
 _f[4] = function(a, b){ return !(a || b);   };
 _f[5] = function(a, b){ return   a ?  b:!b; };
-_l[0] = OMICRON.createLabel("AND" , _style);
-_l[1] = OMICRON.createLabel("OR"  , _style);
-_l[2] = OMICRON.createLabel("XOR" , _style);
-_l[3] = OMICRON.createLabel("NAND", _style);
-_l[4] = OMICRON.createLabel("NOR" , _style);
-_l[5] = OMICRON.createLabel("XNOR", _style);
-
-var _switchLabels = [];
-_switchLabels[false] = OMICRON.createLabel("ON" , {
-	fontFace: "monospace",
-	fontColor:       {r:255, g:255, b:255, a:1},
-	backgroundColor: {r:255, g:106, b:  0, a:1},
-	borderColor:     {r:255, g:255, b:255, a:1},
-});
-_switchLabels[true ] = OMICRON.createLabel("OFF", {
-	fontFace: "monospace",
-	fontColor:       {r:155, g:155, b:155, a:1},
-	backgroundColor: {r:  0, g:  0, b:  0, a:1},
-	borderColor:     {r:155, g:155, b:155, a:1},
-});
+_l[0] = OMICRON.createLabel("AND" , _style_boolean);
+_l[1] = OMICRON.createLabel("OR"  , _style_boolean);
+_l[2] = OMICRON.createLabel("XOR" , _style_boolean);
+_l[3] = OMICRON.createLabel("NAND", _style_boolean);
+_l[4] = OMICRON.createLabel("NOR" , _style_boolean);
+_l[5] = OMICRON.createLabel("XNOR", _style_boolean);
 
 /**
 Latch with one input and one output
@@ -133,14 +100,14 @@ class ToggleLatch extends Block {
 	/**
 	@constructor
 	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, ToggleLatch.options);
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
 
 		//we need to store the value in the block
 		this.value      = false;
 		this.wasToggled = false;
-		this.labels[0].material = ToggleLatch.label;
-		this.labels[1].material = ToggleLatch._l[false];
+		this.labels[0].material = this.class.label;
+		this.labels[1].material = this.class._l[false];
 	}
 
 	update(){
@@ -149,7 +116,7 @@ class ToggleLatch extends Block {
 			// if the pin has just changed of value, we toggle the value
       if(!this.wasToggled){
 				this.value = !this.value;
-				this.labels[1].material = ToggleLatch._l[this.value];
+				this.labels[1].material = this.class._l[this.value];
 			}
       // the value has already been toggled
       this.wasToggled = true;
@@ -159,19 +126,30 @@ class ToggleLatch extends Block {
 		}
 	}
 
-	interact(){
-		this.value = !this.value;
-		this.labels[1].material = ToggleLatch._l[this.value];
+	setState(state){
+		this.value = state;
 	}
 
 	getValue(){
 		return this.value;
 	}
 
+	interact(){
+		this.value = !this.value;
+		this.labels[1].material = this.class._l[this.value];
+	}
 }
 OMICRON.ToggleLatch = ToggleLatch;
-ToggleLatch.options = _default_1;
-ToggleLatch.label = OMICRON.createLabel("Toggle Latch", _style);
+ToggleLatch.options = {
+	meshes:  [_mesh],
+	inputs:  [{type: "boolean", position:{x:0, y:-0.36, z:-0.4}}],
+	outputs: [{type: "boolean", position:{x:0, y:-0.36, z: 0.4}}],
+	labels:  [_label, {position: {x:0, y:0.1, z:0}}],
+	interactibles: [_interactible],
+};
+ToggleLatch.className = "ToggleLatch";
+ToggleLatch.blockName = "Toggle Latch";
+ToggleLatch.label = OMICRON.createLabel("Toggle Latch", _style_boolean);
 ToggleLatch._l    = _switchLabels;
 
 /**
@@ -182,12 +160,12 @@ class FlipFlopLatch extends Block {
 	/**
 	@constructor
 	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, FlipFlopLatch.options);
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
 
 		this.value = false;
-		this.labels[0].material = FlipFlopLatch.label;
-		this.labels[1].material = FlipFlopLatch._l[false];
+		this.labels[0].material = this.class.label;
+		this.labels[1].material = this.class._l[false];
 		//create the inputs and outputs
 		// 0 -> S
 		// 1 -> R
@@ -199,16 +177,15 @@ class FlipFlopLatch extends Block {
 		// if S then Q=true else if R then notQ=true
 		if      (this.inputs[0].value){ // S
 			this.value = true;
-			this.labels[1].material = FlipFlopLatch._l[true];
+			this.labels[1].material = this.class._l[true ];
 		}else if(this.inputs[1].value){ // R
 			this.value = false;
-			this.labels[1].material = FlipFlopLatch._l[false];
+			this.labels[1].material = this.class._l[false];
 		}
 	}
 
-	interact(){
-		this.value = !this.value;
-		this.labels[1].material = FlipFlopLatch._l[this.value];
+	setState(state){
+		this.value = state;
 	}
 
 	getValue(outpin){
@@ -217,6 +194,10 @@ class FlipFlopLatch extends Block {
 		else if(outpin === this.outputs[1]) return !this.value;
 	}
 
+	interact(){
+		this.value = !this.value;
+		this.labels[1].material = this.class._l[this.value];
+	}
 }
 OMICRON.FlipFlopLatch = FlipFlopLatch;
 FlipFlopLatch.options = {
@@ -232,7 +213,9 @@ FlipFlopLatch.options = {
 	labels:  [_label, {position: {x:0, y:0.1, z:0}}],
 	interactibles: [_interactible],
 };
-FlipFlopLatch.label = OMICRON.createLabel("Flip-Flop Latch", _style);
+FlipFlopLatch.className = "FlipFlopLatch";
+FlipFlopLatch.blockName = "Flip-Flop Latch";
+FlipFlopLatch.label = OMICRON.createLabel("Flip-Flop Latch", _style_boolean);
 FlipFlopLatch._l    = _switchLabels;
 
 /**
@@ -241,8 +224,8 @@ Merge booleans into a number
 */
 class BitSet extends Block {
 	constructor(position, orientation){
-		super("BitSet", position, orientation, BitSet.options);
-		this.labels[0].material = BitSet.label;
+		super(this.__proto__, position, orientation);
+		this.labels[0].material = this.class.label;
 	}
 
 	getValue(){
@@ -268,4 +251,6 @@ BitSet.options = {
 	outputs: [{type: "number", position:{x:0, y:-0.36, z: 0.4}}],
 	labels:  [_label],
 };
-BitSet.label = OMICRON.createLabel("BitSet", _style);
+BitSet.className = "BitSet";
+BitSet.blockName = "Bits Set";
+BitSet.label = OMICRON.createLabel("Bits Set", _style_boolean);

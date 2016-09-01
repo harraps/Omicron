@@ -1,11 +1,3 @@
-// default style for labels
-var _style = {
-	fontFace: "monospace",
-	fontColor:       "#ffffff",
-	backgroundColor: "#0000b4",
-	borderColor:     "#ffffff",
-};
-
 // default 1 input, 1 output
 var _default_1 = {
 	meshes:  [_mesh],
@@ -28,20 +20,13 @@ var _default_2 = {
 };
 
 /**
-Sign Gate Block with one input and one output
-@class SignGate
+Sign Unit Block with one input and one output
+@class SignUnit
 */
-class SignGate extends Block {
-	/**
-	@constructor
-	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, SignGate.options);
-
-		// default state of the block
-		this.mod = 0;
-		this.fun = SignGate._f[0];
-		this.labels[0].material = SignGate._l[0];
+class SignUnit extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.setState(0);
 	}
 
 	getValue(){
@@ -49,41 +34,34 @@ class SignGate extends Block {
 	}
 
 	interact(){
-		++this.mod;
-		if(this.mod > 3) this.mod = 0;
-		this.fun = SignGate._f[this.mod];
-		// update the label
-		this.labels[0].material = SignGate._l[this.mod];
+		var state = this.mod+1;
+		if(state > 3) state = 0;
+		this.setState(state);
 	}
 }
-OMICRON.SignGate = SignGate;
-SignGate.options = _default_1;
-var _f = SignGate._f = []; // functions list
-var _l = SignGate._l = []; //    labels list
+OMICRON.SignUnit = SignUnit;
+SignUnit.options = _default_1;
+SignUnit.className = "SignUnit";
+SignUnit.blockName = "Sign";
+var _f = SignUnit._f = []; // functions list
+var _l = SignUnit._l = []; //    labels list
 _f[0] = function(value){ return 0+value; };
 _f[1] = function(value){ return 0-value; };
 _f[2] = Math.abs;
 _f[3] = function(value){ return -Math.abs(value); };
-_l[0] = OMICRON.createLabel(  "x" , _style);
-_l[1] = OMICRON.createLabel( "-x" , _style);
-_l[2] = OMICRON.createLabel( "|x|", _style);
-_l[3] = OMICRON.createLabel("-|x|", _style);
+_l[0] = OMICRON.createLabel(  "x" , _style_number);
+_l[1] = OMICRON.createLabel( "-x" , _style_number);
+_l[2] = OMICRON.createLabel( "|x|", _style_number);
+_l[3] = OMICRON.createLabel("-|x|", _style_number);
 
 /**
-Operator Gate Block with two inputs and one output
-@class OperatorGate
+Operator Unit Block with two inputs and one output
+@class OperatorUnit
 */
-class OperatorGate extends Block {
-	/**
-	@constructor
-	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, OperatorGate.options);
-
-		// default state of the block
-		this.mod = 0;
-		this.fun = OperatorGate._f[0];
-		this.labels[0].material = OperatorGate._l[0];
+class OperatorUnit extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.setState(0);
 	}
 
 	getValue(){
@@ -91,44 +69,37 @@ class OperatorGate extends Block {
 	}
 
 	interact(){
-		++this.mod
-		if(this.mod > 4) this.mod = 0;
-		this.fun = OperatorGate._f[this.mod];
-		// update the label
-		this.labels[0].material = OperatorGate._f[this.mod];
+		var state = this.mod+1;
+		if(state > 4) state = 0;
+		this.setState(state);
 	}
 
 }
-OMICRON.OperatorGate = OperatorGate;
-OperatorGate.options = _default_2;
-var _f = OperatorGate._f = []; // functions list
-var _l = OperatorGate._l = []; //    labels list
+OMICRON.OperatorUnit = OperatorUnit;
+OperatorUnit.options = _default_2;
+OperatorUnit.className = "OperatorUnit";
+OperatorUnit.blockName = "Operator";
+var _f = OperatorUnit._f = []; // functions list
+var _l = OperatorUnit._l = []; //    labels list
 _f[0] = function(a, b){ return a + b; };
 _f[1] = function(a, b){ return a - b; };
 _f[2] = function(a, b){ return a * b; };
 _f[3] = function(a, b){ return a / b; };
 _f[4] = function(a, b){ return a % b; };
-_l[0] = OMICRON.createLabel("+"  , _style);
-_l[1] = OMICRON.createLabel("-"  , _style);
-_l[2] = OMICRON.createLabel("×"  , _style);
-_l[3] = OMICRON.createLabel("÷"  , _style);
-_l[4] = OMICRON.createLabel("MOD", _style);
+_l[0] = OMICRON.createLabel("+"  , _style_number);
+_l[1] = OMICRON.createLabel("-"  , _style_number);
+_l[2] = OMICRON.createLabel("×"  , _style_number);
+_l[3] = OMICRON.createLabel("÷"  , _style_number);
+_l[4] = OMICRON.createLabel("MOD", _style_number);
 
 /**
-Comparator Gate with two inputs and one output
-@class CompareGate
+Comparator Unit with two inputs and one output
+@class ComparatorUnit
 */
-class ComparatorGate extends Block {
-	/**
-	@constructor
-	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, ComparatorGate.options);
-
-		// default state of the block
-		this.mod = 0;
-		this.fun = ComparatorGate._f[0];
-		this.labels[0].material = ComparatorGate._l[0];
+class ComparatorUnit extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.setState(0);
 	}
 
 	getValue(){
@@ -136,16 +107,14 @@ class ComparatorGate extends Block {
 	}
 
 	interact(){
-		++this.mod
-		if(this.mod > 5) this.mod = 0;
-		this.fun = ComparatorGate._f[this.mod];
-		// update the label
-		this.labels[0].material = ComparatorGate._f[this.mod];
+		var state = this.mod+1;
+		if(state > 5) state = 0;
+		this.setState(state);
 	}
 
 }
-OMICRON.ComparatorGate = ComparatorGate;
-ComparatorGate.options = {
+OMICRON.ComparatorUnit = ComparatorUnit;
+ComparatorUnit.options = {
 	meshes:  [_mesh],
 	inputs:  [
 		{type: "number", position:{x:-0.3, y:-0.36, z:-0.4}},
@@ -155,35 +124,31 @@ ComparatorGate.options = {
 	labels:  [_label],
 	interactibles: [_interactible],
 };
-var _f = ComparatorGate._f = []; // functions list
-var _l = ComparatorGate._l = []; //    labels list
+ComparatorUnit.className = "ComparatorUnit";
+ComparatorUnit.blockName = "Comparator";
+var _f = ComparatorUnit._f = []; // functions list
+var _l = ComparatorUnit._l = []; //    labels list
 _f[0] = function(a, b){ return a == b; };
 _f[1] = function(a, b){ return a != b; };
 _f[2] = function(a, b){ return a <= b; };
 _f[3] = function(a, b){ return a <  b; };
 _f[4] = function(a, b){ return a >= b; };
 _f[5] = function(a, b){ return a >  b; };
-_l[0] = OMICRON.createLabel("=", _style);
-_l[1] = OMICRON.createLabel("≠", _style);
-_l[2] = OMICRON.createLabel("≤", _style);
-_l[3] = OMICRON.createLabel("<", _style);
-_l[4] = OMICRON.createLabel("≥", _style);
-_l[5] = OMICRON.createLabel(">", _style);
+_l[0] = OMICRON.createLabel("=", _style_number);
+_l[1] = OMICRON.createLabel("≠", _style_number);
+_l[2] = OMICRON.createLabel("≤", _style_number);
+_l[3] = OMICRON.createLabel("<", _style_number);
+_l[4] = OMICRON.createLabel("≥", _style_number);
+_l[5] = OMICRON.createLabel(">", _style_number);
 
 /**
-Round Gate Block with one input and one output
-@class RoundGate
+Round Unit Block with one input and one output
+@class RoundUnit
 */
-class RoundGate extends Block {
-	/**
-	@constructor
-	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, RoundGate.options);
-
-		this.mod = 0;
-		this.fun = RoundGate._f[0];
-		this.labels[0].material = RoundGate._l[0];
+class RoundUnit extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.setState(0);
 	}
 
 	getValue(){
@@ -191,38 +156,32 @@ class RoundGate extends Block {
 	}
 
 	interact(){
-		++this.mod;
-		if(this.mod > 2) this.mod = 0;
-		this.fun = RoundGate._f[this.mod];
-		// update the label
-		this.labels[0].material = RoundGate._l[this.mod];
+		var state = this.mod+1;
+		if(state > 2) state = 0;
+		this.setState(state);
 	}
 }
-OMICRON.RoundGate = RoundGate;
-RoundGate.options = _default_1;
-var _f = RoundGate._f = []; // functions list
-var _l = RoundGate._l = []; //    labels list
+OMICRON.RoundUnit = RoundUnit;
+RoundUnit.options = _default_1;
+RoundUnit.className = "RoundUnit";
+RoundUnit.blockName = "Round";
+var _f = RoundUnit._f = []; // functions list
+var _l = RoundUnit._l = []; //    labels list
 _f[0] = Math.round;
 _f[1] = Math.floor;
 _f[2] = Math.ceil ;
-_l[0] = OMICRON.createLabel("≈↕", _style);
-_l[1] = OMICRON.createLabel("≈↓", _style);
-_l[2] = OMICRON.createLabel("≈↑", _style);
+_l[0] = OMICRON.createLabel("≈↕", _style_number);
+_l[1] = OMICRON.createLabel("≈↓", _style_number);
+_l[2] = OMICRON.createLabel("≈↑", _style_number);
 
 /**
-Trigonometry Gate Block with one input and one output
-@class TrigonometryGate
+Trigonometry Unit Block with one input and one output
+@class TrigonometryUnit
 */
-class TrigonometryGate extends Block {
-	/**
-	@constructor
-	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, TrigonometryGate.options);
-
-		this.mod = 0;
-		this.fun = TrigonometryGate._f[0];
-		this.labels[0].material = TrigonometryGate._l[0];
+class TrigonometryUnit extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.setState(0);
 	}
 
 	getValue(){
@@ -230,41 +189,38 @@ class TrigonometryGate extends Block {
 	}
 
 	interact(){
-		++this.mod;
-		if(this.mod > 5) this.mod = 0;
-		this.fun = TrigonometryGate._f[this.mod];
-		// update the label
-		this.labels[0].material = TrigonometryGate._l[this.mod];
+		var state = this.mod+1;
+		if(state > 5) state = 0;
+		this.setState(state);
 	}
 }
-OMICRON.TrigonometryGate = TrigonometryGate;
-TrigonometryGate.options = _default_1;
-var _f = TrigonometryGate._f = [];
-var _l = TrigonometryGate._l = [];
+OMICRON.TrigonometryUnit = TrigonometryUnit;
+TrigonometryUnit.options = _default_1;
+TrigonometryUnit.className = "TrigonometryUnit";
+TrigonometryUnit.blockName = "Trigonometry";
+var _f = TrigonometryUnit._f = [];
+var _l = TrigonometryUnit._l = [];
 _f[0] = Math.sin ;
 _f[1] = Math.cos ;
 _f[2] = Math.tan ;
 _f[3] = Math.asin;
 _f[4] = Math.acos;
 _f[5] = Math.atan;
-_l[0] = OMICRON.createLabel( "SIN", _style);
-_l[1] = OMICRON.createLabel( "COS", _style);
-_l[2] = OMICRON.createLabel( "TAN", _style);
-_l[3] = OMICRON.createLabel("ASIN", _style);
-_l[4] = OMICRON.createLabel("ACOS", _style);
-_l[5] = OMICRON.createLabel("ATAN", _style);
+_l[0] = OMICRON.createLabel( "SIN", _style_number);
+_l[1] = OMICRON.createLabel( "COS", _style_number);
+_l[2] = OMICRON.createLabel( "TAN", _style_number);
+_l[3] = OMICRON.createLabel("ASIN", _style_number);
+_l[4] = OMICRON.createLabel("ACOS", _style_number);
+_l[5] = OMICRON.createLabel("ATAN", _style_number);
 
 /**
-Trigonometry Gate Block with two inputs and one output
-@class ATAN2_Gate
+Trigonometry Unit Block with two inputs and one output
+@class ATAN2_Unit
 */
-class ATAN2_Gate extends Block {
-	/**
-	@constructor
-	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, ATAN2_Gate.options);
-		this.labels[0].material = ATAN2_Gate.label;
+class ATAN2_Unit extends Block {
+	constructor(position, orientation){
+		super(this.__proto__,	position, orientation);
+		this.labels[0].material = this.class.label;
 	}
 
 	getValue(){
@@ -272,8 +228,8 @@ class ATAN2_Gate extends Block {
 		return Math.atan2(this.inputs[1].value, this.inputs[0].value);
 	}
 }
-OMICRON.ATAN2_Gate = ATAN2_Gate;
-ATAN2_Gate.options = {
+OMICRON.ATAN2_Unit = ATAN2_Unit;
+ATAN2_Unit.options = {
 	meshes:  [_mesh],
 	inputs:  [
 		{type: "number", position:{x:0, y:-0.36, z:-0.2}}, // X
@@ -282,23 +238,18 @@ ATAN2_Gate.options = {
 	outputs: [{type: "number", position:{x:0, y:-0.36, z:0.4}}],
 	labels:  [_label],
 };
-ATAN2_Gate.label = OMICRON.createLabel("<ATAN>", _style);
+ATAN2_Unit.className = "ATAN2_Unit";
+ATAN2_Unit.blockName = "ArcTangent";
+ATAN2_Unit.label = OMICRON.createLabel("<ATAN>", _style_number);
 
 /**
-Power Gate Block with two inputs and one output
-@class PowerGate
+Power Unit Block with two inputs and one output
+@class PowerUnit
 */
-class PowerGate extends Block {
-	/**
-	@constructor
-	*/
-	constructor(name, position, orientation){
-		super(name, position, orientation, PowerGate.options);
-
-		// default state of the block
-		this.mod = false;
-		this.fun = PowerGate._f[false];
-		this.labels[0].material = PowerGate._l[false];
+class PowerUnit extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.setState(false);
 	}
 
 	getValue(){
@@ -306,34 +257,29 @@ class PowerGate extends Block {
 	}
 
 	interact(){
-		this.mod = !this.mod;
-		this.fun = PowerGate._f[this.mod];
-		// update the label
-		this.labels[0].material = PowerGate._l[this.mod];
+		this.setState(!this.mod);
 	}
 
 }
-OMICRON.PowerGate = PowerGate;
-PowerGate.options = _default_2;
-var _f = PowerGate._f = []; // functions list
-var _l = PowerGate._l = []; //    labels list
+OMICRON.PowerUnit = PowerUnit;
+PowerUnit.options = _default_2;
+PowerUnit.className = "PowerUnit";
+PowerUnit.blockName = "Power";
+var _f = PowerUnit._f = []; // functions list
+var _l = PowerUnit._l = []; //    labels list
 _f[false] = Math.pow;
 _f[true ] = function(x, n){ return Math.pow(x, 1/n); };
-_l[false] = OMICRON.createLabel("xⁿ" , _style);
-_l[true ] = OMICRON.createLabel("ⁿ√x", _style);
+_l[false] = OMICRON.createLabel("xⁿ" , _style_number);
+_l[true ] = OMICRON.createLabel("ⁿ√x", _style_number);
 
 /**
-Square Gate Block with one input and one output
-@class SquareGate
+Square Unit Block with one input and one output
+@class SquareUnit
 */
-class SquareGate extends Block {
+class SquareUnit extends MutableBlock {
 	constructor(position, orientation){
-		super("Square Gate", position, orientation, SquareGate.options);
-
-		// default state of the block
-		this.mod = false;
-		this.fun = SquareGate._f[false];
-		this.labels[0].material = SquareGate._l[false];
+		super(this.__proto__, position, orientation);
+		this.setState(false);
 	}
 
 	getValue(){
@@ -341,34 +287,29 @@ class SquareGate extends Block {
 	}
 
 	interact(){
-		this.mod = !this.mod;
-		this.fun = SquareGate._f[this.mod];
-		// update the label
-		this.labels[0].material = SquareGate._l[this.mod];
+		this.setState(!this.mod);
 	}
 
 }
-OMICRON.SquareGate = SquareGate;
-SquareGate.options = _default_2;
-var _f = SquareGate._f = []; // functions list
-var _l = SquareGate._l = []; //    labels list
+OMICRON.SquareUnit = SquareUnit;
+SquareUnit.options = _default_2;
+SquareUnit.className = "SquareUnit";
+SquareUnit.blockName = "Square";
+var _f = SquareUnit._f = []; // functions list
+var _l = SquareUnit._l = []; //    labels list
 _f[false] = function(x){ return x*x; };
 _f[true ] = Math.sqrt;
-_l[false] = OMICRON.createLabel("x²", _style);
-_l[true ] = OMICRON.createLabel("√x", _style);
+_l[false] = OMICRON.createLabel("x²", _style_number);
+_l[true ] = OMICRON.createLabel("√x", _style_number);
 
 /**
-Distribution Gate Block allow to get data about a array of number
-@class DistributionGate
+Distribution Unit Block allow to get data about a array of number
+@class DistributionUnit
 */
-class DistributionGate extends Block {
+class DistributionUnit extends MutableBlock {
 	constructor(position, orientation){
-		super("Distribution", position, orientation, DistributionGate.options);
-
-		// default state of the block
-		this.mod = 0;
-		this.fun = DistributionGate.f[0];
-		this.labels[0].material = DistributionGate._l[0];
+		super(this.__proto__, position, orientation);
+		this.setState(0);
 	}
 
 	getValue(){
@@ -383,23 +324,23 @@ class DistributionGate extends Block {
 	}
 
 	interact(){
-		++this.mod;
-		if(this.mod > 6) this.mod = 0;
-		this.fun = DistributionGate._l[this.mod];
-		// update the label
-		this.labels[0].material = DistributionGate._l[this.mod];
+		var state = this.mod+1;
+		if(state > 6) state = 0;
+		this.setState(state);
 	}
 }
-OMICRON.DistributionGate = DistributionGate;
-DistributionGate.options = {
+OMICRON.DistributionUnit = DistributionUnit;
+DistributionUnit.options = {
 	meshes:  [_mesh],
 	inputs:  [{type: "array" , position:{x:0, y:-0.36, z:-0.4}}],
 	outputs: [{type: "number", position:{x:0, y:-0.36, z: 0.4}}],
 	labels:  [_label],
 	interactibles: [_interactible],
 };
+DistributionUnit.className = "DistributionUnit";
+DistributionUnit.blockName = "Distribution";
 // function to quicksort an array
-DistributionGate.split = function(array, x, ref){
+DistributionUnit.split = function(array, x, ref){
 	do{ // do left and right scan until pointers cross
 		while(array[ref.i] < x) ++ref.i; // scan from left
 		while(array[ref.j] > x) --ref.j; // scan from right
@@ -414,7 +355,7 @@ DistributionGate.split = function(array, x, ref){
 	}while(ref.i <= ref.j);
 };
 // function to get percentiles of an array
-DistributionGate.percentiles = function(array, k){
+DistributionUnit.percentiles = function(array, k){
 	var l = 0, r = array.length - 1;
 	var k *= array.length; // 1/2 -> median
 	var ref = { i, j };
@@ -428,8 +369,8 @@ DistributionGate.percentiles = function(array, k){
 	// if l=6 and r=5 -> 5.5
 	return (array[l] + array[r]) * 0.5;
 };
-var _f = DistributionGate._f = []; // functions list
-var _l = DistributionGate._l = []; //    labels list
+var _f = DistributionUnit._f = []; // functions list
+var _l = DistributionUnit._l = []; //    labels list
 _f[0] = function(array){ // Average
 	var result = 0;
 	for(var i=0; i<array.length; ++i)
@@ -438,18 +379,18 @@ _f[0] = function(array){ // Average
 };
 _f[1] = function(a){ return Math.min(...a); }; // Minimum
 _f[2] = function(a){ return Math.max(...a); }; // Maximum
-_f[3] = function(a){ return DistributionGate.percentiles(a, 0.5 ); };
-_f[4] = function(a){ return DistributionGate.percentiles(a, 0.25); };
-_f[5] = function(a){ return DistributionGate.percentiles(a, 0.75); };
+_f[3] = function(a){ return DistributionUnit.percentiles(a, 0.5 ); };
+_f[4] = function(a){ return DistributionUnit.percentiles(a, 0.25); };
+_f[5] = function(a){ return DistributionUnit.percentiles(a, 0.75); };
 _f[6] = function(array){
-	var q1 = DistributionGate.percentiles(array, 0.25),
-			q2 = DistributionGate.percentiles(array, 0.75);
+	var q1 = DistributionUnit.percentiles(array, 0.25),
+			q2 = DistributionUnit.percentiles(array, 0.75);
 	return q2 - q1;
 };
-_l[0] = OMICRON.createLabel("Average"        , _style);
-_l[1] = OMICRON.createLabel("Minimum"        , _style);
-_l[2] = OMICRON.createLabel("Maximum"        , _style);
-_l[3] = OMICRON.createLabel("Median"         , _style);
-_l[4] = OMICRON.createLabel("First Quartile" , _style);
-_l[5] = OMICRON.createLabel("Second Quartile", _style);
-_l[6] = OMICRON.createLabel("Interquartile"  , _style);
+_l[0] = OMICRON.createLabel("Average"      , _style_number);
+_l[1] = OMICRON.createLabel("Minimum"      , _style_number);
+_l[2] = OMICRON.createLabel("Maximum"      , _style_number);
+_l[3] = OMICRON.createLabel("Median"       , _style_number);
+_l[4] = OMICRON.createLabel("1st Quartile" , _style_number);
+_l[5] = OMICRON.createLabel("2nd Quartile" , _style_number);
+_l[6] = OMICRON.createLabel("Interquartile", _style_number);

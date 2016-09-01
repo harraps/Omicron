@@ -19,6 +19,7 @@ gulp.task('build', function() {
 		"src/Init.js",
 		"src/Util.js",
 		"src/blocks/Block.js",
+		"src/blocks/BasicBlock.js",
 		"src/**/*.js",
 		"src/End.js"
 	],

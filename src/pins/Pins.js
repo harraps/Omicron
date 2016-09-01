@@ -34,6 +34,11 @@ class InPin {
 				rot  = params.rotation;
 		if(typeof type  === "undefined") type = null;
 
+		this.id = InPin.ID++;
+		// if the id is not safe anymore
+		if( !Number.isSafeInteger(InPin.ID) )
+			InPin.ID = Number.MIN_SAFE_INTEGER;
+
 		this.block = block; // the block
 		this.type  = type;  // the type of the pin
 		this.value = null;  // value of the pin
@@ -127,7 +132,19 @@ class InPin {
 		this.disconnect();
 		//remove from board
 	}
+
+	toJSON(){
+		// we recover the id of the connected pin
+		var connected = null;
+		if(this.outpin != null)
+			connected = this.outpin.id;
+		return {
+			id: this.id,
+			co: connected,
+		};
+	}
 }
+InPin.ID = 0;
 // Octahedron shape
 InPin.geometry = new THREE.OctahedronGeometry(0.05);
 OMICRON.InPin = InPin;
@@ -156,6 +173,11 @@ class OutPin {
 				pos  = params.position,
 				rot  = params.rotation;
 		if(typeof type  === "undefined") type = null;
+
+		this.id = OutPin.ID++;
+		// if the id is not safe anymore
+		if( !Number.isSafeInteger(OutPin.ID) )
+			OutPin.ID = Number.MIN_SAFE_INTEGER;
 
 		this.block = block; // the block
 		this.type  = type;  // the type of the pin
@@ -210,7 +232,15 @@ class OutPin {
 		//remove from board
 	}
 
+	toJSON(){
+		return {
+			id: this.id,
+
+		};
+	}
+
 }
+OutPin.ID = 0;
 // Pyramid shape
 OutPin.geometry = new THREE.ConeGeometry(0.05, 0.1, 4);
 OMICRON.OutPin = OutPin;

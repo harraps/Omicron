@@ -2,7 +2,7 @@ class Block {
 	/**
 	Create a new block in the world
 	@constructor
-	@param {String} name Name of the Block
+	@param {Class} clazz Class of the block
 	@param {Vector3} position Position of the Block in space
 	@param {Number} orientation Orientation of the Block
 	@param {Object} options Options regarding the creation of the Block
@@ -13,15 +13,24 @@ class Block {
 	@param {Array} options.labels Labels text, position, and rotation, is a interactible ?
 	@param {Array} options.interactibles Interactibles geometry, material, position and rotation
 	*/
-	constructor(name, position, orientation, options){
-		options = options || {};
+	constructor(clazz, position, orientation, options){
+		if(clazz == null) throw new Error("Class of block not specified");
+
+		// we keep track of the class of the block
+		this.class = clazz;
+
+		this.id = block.ID++;
+		// if the id is not safe anymore
+		if( !Number.isSafeInteger(block.ID) )
+			block.ID = Number.MIN_SAFE_INTEGER;
+
 		this.inputs  = [];
 		this.outputs = [];
 		this.labels  = [];
 		this.inters  = [];
 
 		this.object = new THREE.Object3D();
-		this.object.name = name || "";
+		this.object.name = clazz.blockName || "";
 		if(position    != null) this.object.position.copy(position);
 		if(orientation != null) this.object.rotateZ(orientation);
 
@@ -30,17 +39,18 @@ class Block {
 		this.box = new THREE.Box3(min, max);
 		this.box.translate(this.object.getWorldPosition());
 
-		var i,
-		mshOpt = options.meshes,
-		typOpt = options.defaultType,
-		inpOpt = options.inputs,
-		outOpt = options.outputs,
-		labOpt = options.labels,
-		intOpt = options.interactibles;
+		// options regarding the layout of the pins
+		var options = options || clazz.options || {};
+		var mshOpt = options.meshes,
+				typOpt = options.defaultType,
+				inpOpt = options.inputs,
+				outOpt = options.outputs,
+				labOpt = options.labels,
+				intOpt = options.interactibles;
 
 		// generate the meshes representing the block
 		if(mshOpt != null){
-			for(i=0; i<mshOpt.length; ++i){
+			for(var i=0; i<mshOpt.length; ++i){
 				var geometry = mshOpt.geometry,
 						material = mshOpt.material,
 						position = mshOpt.position,
@@ -56,7 +66,7 @@ class Block {
 
 		// generate the inputs pins
 		if(inpOpt != null){
-			for(i=0; i<inpOpt.length; ++i){
+			for(var i=0; i<inpOpt.length; ++i){
 				var opt = inpOpt[i];
 				// if the type of the input is not defined use, the default one
 				if(opt.type == null) opt.type = typOpt || "boolean";
@@ -67,7 +77,7 @@ class Block {
 
 		// generate the outputs pins
 		if(outOpt != null){
-			for(i=0; i<outOpt.length; ++i){
+			for(var i=0; i<outOpt.length; ++i){
 				var opt = outOpt[i];
 				// if the type of the input is not defined use, the default one
 				if(opt.type == null) opt.type = typOpt || "boolean";
@@ -78,7 +88,7 @@ class Block {
 
 		// generate the labels
 		if(labOpt != null){
-			for(i=0; i<labOpt.length; ++i){
+			for(var i=0; i<labOpt.length; ++i){
 				var opt   = labOpt[i],
 						label = new THREE.Sprite();
 				this.object.add(label);
@@ -89,7 +99,7 @@ class Block {
 
 		// generate the interactible parts
 		if(intOpt != null){
-			for(i=0; i<intOpt.length; ++i){
+			for(var i=0; i<intOpt.length; ++i){
 				var opt = intOpt[i];
 				// default values
 				var min = new THREE.Vector3(-0.1,-0.1,-0.1),
@@ -110,9 +120,9 @@ class Block {
 		this.isDestroy = false;
 	}
 
-	update(){
+	update(){}
 
-	}
+	setState(state){}
 
 	getValue(outpin){}
 
@@ -128,48 +138,30 @@ class Block {
 		//for(i=0; i<this.inters.length; ++i); //remove from world
 	}
 
+	// generate an object that can be converted into a json string safely
+	toJSON(){
+		var pos = {
+			x: this.object.position.x,
+			y: this.object.position.y,
+			z: this.object.position.z,
+		};
+		var inputs  = [],
+				outputs = [];
+		for(var i=0; this.inputs.length; ++i){
+			inputs[inputs.length] = this.inputs[i].toJSON();
+		}
+		for(var i=0; this.outputs.length; ++i){
+			outputs[outputs.length] = this.outputs[i].toJSON();
+		}
+		return {
+			id:    this.id,
+			class: this.class,
+			pos:   pos,
+			orien: this.object.rotation.z,
+			ins:   inputs,
+			outs:  outputs,
+		};
+	}
 }
+Block.ID = 0;
 OMICRON.Block = Block;
-
-// default mesh for blocks
-var _mesh = {
-	geometry: new THREE.BoxGeometry(1,0.1,1),
-	material: new THREE.MeshLambertMaterial({color: 0xffcccc}),
-	position: {x:0, y:-0.45, z:0},
-};
-// default label position
-var _label = {
-	position: {x:0, y:-0.25, z:0},
-};
-// default interaction zone
-var _interactible = {
-	min:      {x:-0.3, y:-0.14, z:-0.3},
-	max:      {x: 0.3, y: 0.14, z: 0.3},
-	position: {x: 0  , y:-0.25, z: 0  },
-};
-
-var _multipleInPins = [
-	//top raw
-	{position:{x:-0.3, y:-0.36, z:-0.2}},
-	{position:{x:-0.1, y:-0.36, z:-0.2}},
-	{position:{x: 0.1, y:-0.36, z:-0.2}},
-	{position:{x: 0.3, y:-0.36, z:-0.2}},
-	// bottom raw
-	{position:{x:-0.3, y:-0.36, z:-0.4}},
-	{position:{x:-0.1, y:-0.36, z:-0.4}},
-	{position:{x: 0.1, y:-0.36, z:-0.4}},
-	{position:{x: 0.3, y:-0.36, z:-0.4}},
-];
-
-var _multipleOutPins = [
-	//top raw
-	{position:{x:-0.3, y:-0.36, z:0.4}},
-	{position:{x:-0.1, y:-0.36, z:0.4}},
-	{position:{x: 0.1, y:-0.36, z:0.4}},
-	{position:{x: 0.3, y:-0.36, z:0.4}},
-	// bottom raw
-	{position:{x:-0.3, y:-0.36, z:0.2}},
-	{position:{x:-0.1, y:-0.36, z:0.2}},
-	{position:{x: 0.1, y:-0.36, z:0.2}},
-	{position:{x: 0.3, y:-0.36, z:0.2}},
-];
