@@ -1,10 +1,11 @@
 // Array to store pin material based on types
 var mats = OMICRON.pinMaterials = [];
 mats[null] = new THREE.MeshBasicMaterial({});
-mats["boolean"] = new THREE.MeshLambertMaterial({color: 0xff0000, emissive: 0x000000});
-mats["number" ] = new THREE.MeshLambertMaterial({color: 0x0000ff, emissive: 0x000000});
-mats["string" ] = new THREE.MeshLambertMaterial({color: 0x00ff00, emissive: 0x000000});
-mats["array"  ] = new THREE.MeshLambertMaterial({color: 0xffffff, emissive: 0x000000});
+mats["boolean"] = new THREE.MeshLambertMaterial({color: 0xE84646, emissive: 0x5C1313});
+mats["number" ] = new THREE.MeshLambertMaterial({color: 0x478FF5, emissive: 0x0D2445});
+mats["string" ] = new THREE.MeshLambertMaterial({color: 0x40DB67, emissive: 0x0D421A});
+mats["array"  ] = new THREE.MeshLambertMaterial({color: 0xF2AC49, emissive: 0x543912});
+mats["color"  ] = new THREE.MeshLambertMaterial({color: 0xffffff, emissive: 0x000000});
 
 /**
 Octahedron shaped input pin
@@ -120,7 +121,11 @@ class InPin {
 	setWireColor(isHigh){
 		var mat = this.wire.material;
 		if(isHigh){
-			mat.color     = this.highColor;
+			if(isHigh instanceof THREE.Color){
+				mat.color = isHigh;
+			}else{
+				mat.color = this.highColor;
+			}
 			mat.linewidth = this.highWidth;
 		}else{
 			mat.color     = this.lowColor;

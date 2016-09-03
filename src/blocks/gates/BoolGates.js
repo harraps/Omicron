@@ -32,7 +32,7 @@ class LogicGate1 extends MutableBlock {
 	}
 
 	getValue(){
-		return this.fun(this.inputs[0]);
+		return this.fun(this.inputs[0].value);
 	}
 
 	interact(){
@@ -64,7 +64,7 @@ class LogicGate2 extends MutableBlock {
 	}
 
 	getValue(){
-		return this.fun(this.inputs[0], this.inputs[1]);
+		return this.fun(this.inputs[0].value, this.inputs[1].value);
 	}
 
 	interact(){

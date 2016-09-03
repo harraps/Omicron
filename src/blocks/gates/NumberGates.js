@@ -1,3 +1,5 @@
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+
 // default 1 input, 1 output
 var _default_1 = {
 	meshes:  [_mesh],
@@ -140,6 +142,109 @@ _l[2] = OMICRON.createLabel("≤", _style_number);
 _l[3] = OMICRON.createLabel("<", _style_number);
 _l[4] = OMICRON.createLabel("≥", _style_number);
 _l[5] = OMICRON.createLabel(">", _style_number);
+
+/**
+Binary Unit Block with one input and one output
+@class BinaryUnit
+*/
+class BinaryUnit extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.setState(false);
+	}
+
+	getValue(){
+		return this.fun(this.inputs[0]);
+	}
+
+	interact(){
+		this.setState(!this.mod);
+	}
+}
+OMICRON.BinaryUnit = BinaryUnit;
+BinaryUnit.options = _default_1;
+BinaryUnit.className = "BinaryUnit";
+BinaryUnit.blockName = "Binary";
+var _f = BinaryUnit._f = []; // functions list
+var _l = BinaryUnit._l = []; //    labels list
+_f[false] = function(value){ return 0|value; }; // convert to integer
+_f[true ] = function(value){ return  ~value; }; // reverse bits
+_l[false] = OMICRON.createLabel("buf", _style_number);
+_l[true ] = OMICRON.createLabel("not", _style_number);
+
+/**
+Bitwise Unit Block with two inputs and one output
+@class BitwiseUnit
+*/
+class BitwiseUnit extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.setState(0);
+	}
+
+	getValue(){
+		return this.fun(this.inputs[0], this.inputs[1]);
+	}
+
+	interact(){
+		var state = this.mod+1;
+		if(state > 5) state = 0;
+		this.setState(state);
+	}
+
+}
+OMICRON.BitwiseUnit = BitwiseUnit;
+BitwiseUnit.options = _default_2;
+BitwiseUnit.className = "BitwiseUnit";
+BitwiseUnit.blockName = "Bitwise";
+var _f = BitwiseUnit._f = []; // functions list
+var _l = BitwiseUnit._l = []; //    labels list
+_f[0] = function(a, b){ return   a & b ; };
+_f[1] = function(a, b){ return   a | b ; };
+_f[2] = function(a, b){ return   a ^ b ; };
+_f[3] = function(a, b){ return ~(a & b); };
+_f[4] = function(a, b){ return ~(a | b); };
+_f[5] = function(a, b){ return ~(a ^ b); };
+_l[0] = OMICRON.createLabel("and" , _style_number);
+_l[1] = OMICRON.createLabel("or"  , _style_number);
+_l[2] = OMICRON.createLabel("xor" , _style_number);
+_l[3] = OMICRON.createLabel("nand", _style_number);
+_l[4] = OMICRON.createLabel("nor" , _style_number);
+_l[5] = OMICRON.createLabel("xnor", _style_number);
+
+/**
+Binary Shift Block with two inputs and one output
+@class BinaryShift
+*/
+class BinaryShift extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.setState(0);
+	}
+
+	getValue(){
+		return this.fun(this.inputs[0], this.inputs[1]);
+	}
+
+	interact(){
+		var state = this.mod+1;
+		if(state > 2) state = 0;
+		this.setState(state);
+	}
+
+}
+OMICRON.BinaryShift = BinaryShift;
+BinaryShift.options = _default_2;
+BinaryShift.className = "BinaryShift";
+BinaryShift.blockName = "Binary Shift";
+var _f = BinaryShift._f = []; // functions list
+var _l = BinaryShift._l = []; //    labels list
+_f[0] = function(a, b){ return a <<  b; };
+_f[1] = function(a, b){ return a >>  b; };
+_f[2] = function(a, b){ return a >>> b; };
+_l[0] = OMICRON.createLabel("Left Shift"    , _style_number);
+_l[1] = OMICRON.createLabel("Right Shift"   , _style_number);
+_l[2] = OMICRON.createLabel("0-fill R-Shift", _style_number);
 
 /**
 Round Unit Block with one input and one output
@@ -394,3 +499,61 @@ _l[3] = OMICRON.createLabel("Median"       , _style_number);
 _l[4] = OMICRON.createLabel("1st Quartile" , _style_number);
 _l[5] = OMICRON.createLabel("2nd Quartile" , _style_number);
 _l[6] = OMICRON.createLabel("Interquartile", _style_number);
+
+/**
+Convert a number into a hexadecimal sequence
+@class Hexadecimal
+*/
+class Hexadecimal extends Block {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.labels[0].material = this.class.label;
+	}
+
+	getValue(){
+		var value = this.inputs[0].value;
+		if(typeof value === "number"){
+			return value.toString(16);
+		}
+		return null;
+	}
+}
+OMICRON.Hexadecimal = Hexadecimal;
+Hexadecimal.options = {
+	meshes:  [_mesh],
+	inputs:  [{type: "number", position:{x:0, y:-0.36, z:-0.4}}],
+	outputs: [{type: "string", position:{x:0, y:-0.36, z: 0.4}}],
+	labels:  [_label],
+};
+Hexadecimal.className = "Hexadecimal";
+Hexadecimal.blockName = "Hexadecimal";
+Hexadecimal.label = OMICRON.createLabel("Hexadecimal", _style_number);
+
+/**
+Convert a hexadecimal sequence into a number
+@class Decimal
+*/
+class Decimal extends Block {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.labels[0].material = this.class.label;
+	}
+
+	getValue(){
+		var value = this.inputs[0].value;
+		if(typeof value === "string"){
+			return parseInt(str, 16);
+		}
+		return null;
+	}
+}
+OMICRON.Decimal = Decimal;
+Decimal.options = {
+	meshes:  [_mesh],
+	inputs:  [{type: "string", position:{x:0, y:-0.36, z:-0.4}}],
+	outputs: [{type: "number", position:{x:0, y:-0.36, z: 0.4}}],
+	labels:  [_label],
+};
+Decimal.className = "Decimal";
+Decimal.blockName = "Decimal";
+Decimal.label = OMICRON.createLabel("Decimal", _style_number);

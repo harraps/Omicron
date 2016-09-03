@@ -1,3 +1,5 @@
+// http://www.w3schools.com/jsref/jsref_obj_string.asp
+
 // default string gate definition
 var _default_1 = {
 	meshes:  [_mesh],
@@ -5,6 +7,47 @@ var _default_1 = {
 	outputs: [{type: "string", position:{x:0, y:-0.36, z: 0.4}}],
 	labels:  [_label],
 };
+
+/**
+Return true if both strings are equals
+@class ComparatorProc
+*/
+class ComparatorProc extends MutableBlock {
+	constructor(position, orientation){
+		super(this.__proto__, position, orientation);
+		this.setState(false);
+	}
+
+	getValue(){
+		return this.fun(
+			this.inputs[0].value,
+			this.inputs[1].value
+		);
+	}
+
+	interact(){
+		this.setState(!this.mod);
+	}
+}
+OMICRON.ComparatorProc = ComparatorProc;
+ComparatorProc.options = {
+	meshes:  [_mesh],
+	inputs:  [
+		{type: "string", position:{x:-0.3, y:-0.36, z:-0.4}},
+		{type: "string", position:{x: 0.3, y:-0.36, z:-0.4}},
+	],
+	outputs: [{type: "boolean", position:{x:0, y:-0.36, z: 0.4}}],
+	labels:  [_label],
+	interactibles: [_interactible],
+};
+ComparatorProc.className = "ComparatorProc";
+ComparatorProc.blockName = "Comparator Processor";
+var _f = ComparatorProc._f = [];
+var _l = ComparatorProc._l = [];
+_f[false] = function(a,b){ return a == b; };
+_f[true ] = function(a,b){ return a != b; };
+_l[false] = OMICRON.createLabel("Equals"   , _style_string);
+_l[true ] = OMICRON.createLabel("Different", _style_string);
 
 /**
 CharAt Processor Block return a single character
@@ -22,7 +65,7 @@ class CharAtProc extends Block {
 		if(typeof str === "string"){
 			// two output types:
 			if      (outpin === this.outputs[0]){ //return character
-				return str.charAt(this.inputs[1].value); //string
+				return str.charAt    (this.inputs[1].value); //string
 			}else if(outpin === this.outputs[1]){ //return charcode
 				return str.charCodeAt(this.inputs[1].value); //number
 			}

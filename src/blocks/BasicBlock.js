@@ -45,26 +45,32 @@ var _interactible = {
 // style defined on types
 var _style_boolean = {
 	fontFace: "monospace",
-	fontColor:       "#ffffff",
-	backgroundColor: "#b40000",
-	borderColor:     "#ffffff",
+	fontColor:       "#E84646",
+	backgroundColor: "#5C1313",
+	borderColor:     "#E84646",
 };
 var _style_number = {
 	fontFace: "monospace",
-	fontColor:       "#ffffff",
-	backgroundColor: "#0000b4",
-	borderColor:     "#ffffff",
+	fontColor:       "#478FF5",
+	backgroundColor: "#0D2445",
+	borderColor:     "#478FF5",
 };
 var _style_string = {
 	fontFace: "monospace",
-	fontColor:       "#ffffff",
-	backgroundColor: "#00b400",
-	borderColor:     "#ffffff",
+	fontColor:       "#40DB67",
+	backgroundColor: "#0D421A",
+	borderColor:     "#40DB67",
 };
 var _style_array = {
 	fontFace: "monospace",
+	fontColor:       "#F2AC49",
+	backgroundColor: "#543912",
+	borderColor:     "#F2AC49",
+};
+var _style_color = {
+	fontFace: "monospace",
 	fontColor:       "#ffffff",
-	backgroundColor: "#b4b4b4",
+	backgroundColor: "#000000",
 	borderColor:     "#ffffff",
 };
 
